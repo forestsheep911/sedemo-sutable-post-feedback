@@ -1,12 +1,12 @@
 {
-  "name": "aabb",
+  "name": "subtable-post-feedback",
   "version": "1.0.0",
   "description": "none",
   "scripts": {
     "format": "prettier --write src",
     "lint": "eslint --fix -c .eslintrc.js --ignore-path .eslintignore --ext .js src && stylelint --config .stylelintrc.js src/**/*.css",
     "upload": "kintone-customize-uploader --base-url ${sub-domain}.cybozu.cn --username ${username} --password ${password} customize-manifest.json",
-    "start": "npm run upload && cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.js",
+    "start": "cross-env NODE_ENV=development webpack serve --config ./config/webpack.dev.js",
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.js"
   },
   "keywords": [
