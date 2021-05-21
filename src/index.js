@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-async function pushToOtherApp(params) {
+function pushToOtherApp(params) {
   const paramsCopy = params
   console.log(paramsCopy)
   paramsCopy.app = 14
@@ -13,15 +13,16 @@ async function pushToOtherApp(params) {
   //     },
   //   },
   // }
-  const res = await kintone.api(kintone.api.url('/k/v1/record', true), 'POST', params).then(
-    function gosuccess(resp) {
-      return resp
-    },
-    function goerror(error) {
-      // console.log(error)
-    },
-  )
-  return res
+  return kintone.api(kintone.api.url('/k/v1/record', true), 'POST', params)
+  // .then(
+  //   function gosuccess(resp) {
+  //     return resp
+  //   },
+  //   function goerror(error) {
+  //     // console.log(error)
+  //   },
+  // )`
+  // return res
 }
 
 kintone.events.on(['app.record.create.submit', 'app.record.edit.submit'], async (event) => {
@@ -30,9 +31,12 @@ kintone.events.on(['app.record.create.submit', 'app.record.edit.submit'], async 
   const params = { record: { pd_title: { value: undefined } } }
   params.record.pd_title.value = event.record.my_subtable.value[0].value.sb_title.value
   console.log(params)
-  const result0 = await pushToOtherApp(params)
-  console.log(result0.id)
-  // console.log(thisrecord.my_subtable.value[0])
-  thisrecord.my_subtable.value[0].value.sb_callback_rd_no.value = result0.id
+  try {
+    const feedbackRecord = await pushToOtherApp(params)
+    console.log(feedbackRecord)
+    thisrecord.my_subtable.value[0].value.sb_callback_rd_no.value = feedbackRecord.id
+  } catch (error) {
+    console.log(error.message)
+  }
   return event
 })
