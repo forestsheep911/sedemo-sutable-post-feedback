@@ -8,7 +8,6 @@ readme
 后记：
 如逐条追加的性能不能满足要求，则需要做后续的研究，使用批量的问题在于需要解决返回id的对应匹配问题。
  */
-import async from 'async'
 
 // 自己环境中需要更新的appid
 const UPDATE_APP_ID = 14

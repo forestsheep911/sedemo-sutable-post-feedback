@@ -10,8 +10,8 @@ module.exports = merge(common, {
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].[contenthash:8].css',
-      chunkFilename: 'css/[name].[contenthash:8].css',
+      filename: 'css/[name].css',
+      chunkFilename: 'css/[name].css',
     }),
   ],
   optimization: {
@@ -33,16 +33,16 @@ module.exports = merge(common, {
         },
       }),
     ],
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name(module, chunks, cacheGroupKey) {
-            return `${cacheGroupKey}`
-          },
-          chunks: 'all',
-        },
-      },
-    },
+    // splitChunks: {
+    //   cacheGroups: {
+    //     commons: {
+    //       test: /[\\/]node_modules[\\/]/,
+    //       name(module, chunks, cacheGroupKey) {
+    //         return `${cacheGroupKey}`
+    //       },
+    //       chunks: 'all',
+    //     },
+    //   },
+    // },
   },
 })

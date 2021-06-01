@@ -41,14 +41,13 @@ module.exports = {
     app: resolve(__dirname, '../src/index.js'),
   },
   output: {
-    filename: `js/[name]${isDev ? '' : '.[contenthash:8]'}.js`,
+    filename: `js/[name]${isDev ? '' : ''}.js`,
     path: resolve(__dirname, '../dist'),
   },
   resolve: {
     extensions: ['.js', '.json'],
   },
-  externals: {
-  },
+  externals: {},
   plugins: [
     new webpack.DefinePlugin({
       process: {
