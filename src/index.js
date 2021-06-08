@@ -1,44 +1,22 @@
-/*
-readme
-本DEMO的基本逻辑
-新增数据用逐条更新的方式；更新数据用批量更新的方式；
-步骤：
-先提取subtable中的内容，然后分成新增和更新2部分，分别去执行相应代码。
-新增会有id返回，所以需要写回subtable。
-后记：
-如逐条追加的性能不能满足要求，则需要做后续的研究，使用批量的问题在于需要解决返回id的对应匹配问题。
- */
+import { KintoneRestAPIClient } from '@kintone/rest-api-client'
+
+const client = new KintoneRestAPIClient({
+  baseUrl: 'https://cndevqpofif.cybozu.cn',
+  // Use password authentication
+  auth: {
+    username: `dog`,
+    password: `1`,
+  },
+  // Use API token authentication
+  // auth: { apiToken: process.env.KINTONE_API_TOKEN }
+  // Use OAuth token authentication
+  // auth: { oAuthToken: process.env.KINTONE_OAUTH_TOKEN }
+
+  // Use session authentication if `auth` is omitted (in browser only)
+})
 
 // 自己环境中需要更新的appid
 const UPDATE_APP_ID = 14
-// 更新数据方法
-async function putRecords(app, records) {
-  // 批量更新的上限是100条
-  const limit = 100
-  // 把数据加工成100条一块的2维数组
-  const blockedRecords = records.reduce(
-    (recordsBlocks, record) => {
-      if (recordsBlocks[recordsBlocks.length - 1].length === limit) {
-        recordsBlocks.push([record])
-      } else {
-        recordsBlocks[recordsBlocks.length - 1].push(record)
-      }
-      return recordsBlocks
-    },
-    [[]],
-  )
-  // 同时进行批量更新可能会导致数据库锁定，所以必须顺序执行
-  // 创建一个假的初始的promise用来作为reduce的初始累加值
-  const starterPromise = Promise.resolve(null)
-  await blockedRecords.reduce(async (accPromise, recordsBlock) => {
-    // 执行累加器中的Promise
-    await accPromise
-    return kintone.api(kintone.api.url('/k/v1/records', true), 'PUT', {
-      app,
-      records: recordsBlock,
-    })
-  }, starterPromise)
-}
 
 function postRecordOneByOne(app, record) {
   return kintone.api(kintone.api.url('/k/v1/record', true), 'POST', {
@@ -82,7 +60,7 @@ kintone.events.on(['app.record.create.submit', 'app.record.edit.submit'], async 
     })
     // 去除null,也就是更新以外的数组成员
     .filter((x) => x)
-  await putRecords(UPDATE_APP_ID, readyToPutRecords)
+  await client.record.updateAllRecords({ app: UPDATE_APP_ID, records: readyToPutRecords })
   const postResponseAll = () => {
     return Promise.all(
       thisrecord.my_subtable.value.map(async (current, index, array) => {
